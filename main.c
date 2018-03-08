@@ -1,5 +1,15 @@
 #include <stdio.h>
 
+typedef struct Token {
+	bool white;	
+} Token;
+
+typedef struct Player {
+	char name[20];
+	bool colour;
+	int tokensPlace;
+} Player;
+
 int main() {
 	
 }
