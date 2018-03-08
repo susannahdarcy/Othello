@@ -13,12 +13,15 @@ typedef struct Player {
 } Player;
 
 void printBoard(Token board[8][8]);
+void setup(Token board[8][8]);
+
 
 int main() {
 	Token board[8][8];
 	Player player1;
 	Player player2;
 	
+	setup(board);
 	printBoard(board);
 }
 
@@ -26,14 +29,25 @@ void printBoard(Token board[8][8]) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (board[i][j].type == 0) {
-				printf("X");
+				printf("X ");
 			} else if (board[i][j].type == 1) {
-				printf("O");
+				printf("O ");
 			} else {
-				printf(" ");
+				printf("_ ");
 			}
 		}
 		printf("\n");
+ 	}
+}
+
+void setup(Token board[8][8]){
+	
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			board[i][j].type = 10;
+			
+		}
+		
  	}
 }
 
