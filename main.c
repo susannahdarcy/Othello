@@ -3,6 +3,13 @@
 #include <stdbool.h>
 #include <string.h>
 
+/**
+ * Board type:
+ * 	- 1:	Player 1 = X
+ *  - 2:	Player 2 = O
+ *	- Else:	Blank = _ 	
+ */
+
 typedef struct Token {
 	int type;	
 } Token;
@@ -16,6 +23,7 @@ typedef struct Player {
 bool requestInput(int inputLength, char output[]);
 void printBoard(Token board[8][8]);
 void setup(Token board[8][8], Player player1, Player player2);
+void play(Token board[8][8], Player player1, Player player2);
 
 int main() {
 	Token board[8][8];
@@ -23,7 +31,7 @@ int main() {
 	Player player2;
 	
 	setup(board, player1, player2);
-	printBoard(board);
+	play(board, player1, player2);
 }
 
 void printBoard(Token board[8][8]) {
@@ -34,7 +42,7 @@ void printBoard(Token board[8][8]) {
 			} else if (board[i][j].type == 1) {
 				printf("O ");
 			} else {
-				printf("_ ");
+				printf("- ");
 			}
 		}
 		printf("\n");
@@ -47,6 +55,12 @@ void setup(Token board[8][8], Player player1, Player player2){
 			board[i][j].type = 10;	
 		}
  	}
+	
+	board[3][3].type = 0;
+	board[4][4].type = 0;
+	board[4][3].type = 1;
+	board[3][4].type = 1;
+	
 	char input[20];
 	printf("Enter Player 1's name: ");
 	while(!requestInput(20, input)) {
@@ -92,4 +106,8 @@ bool requestInput(int inputLength, char output[]) {
         exit(1);
     }
     return false;
+}
+
+void play(Token board[8][8], Player player1, Player player2){
+	printBoard(board);
 }
