@@ -36,6 +36,14 @@ int main() {
 	play(board, &player1, &player2);
 }
 
+/**
+ * Prints the current state of the board.
+ *
+ * @param
+ *  - board: The board object. Contains Token structs.
+ *  - player1: The Player object for player 1.
+ *  - player2: The Player object for player 2.
+ */
 void printBoard(Token board[8][8], Player *player1, Player *player2) {
 	printf("  1 2 3 4 5 6 7 8\n");
 	for (int i = 0; i < 8; i++) {
@@ -53,7 +61,15 @@ void printBoard(Token board[8][8], Player *player1, Player *player2) {
  	}
 }
 
-void setup(Token board[8][8], Player *player1, Player *player2){
+/**
+ * Zero's memory, sets defaults, requests user properties such as name and token.
+ *
+ * @param
+ *  - board: The board object. Contains Token structs.
+ *  - player1: The Player object for player 1.
+ *  - player2: The Player object for player 2.
+ */
+void setup(Token board[8][8], Player *player1, Player *player2) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			board[i][j].type = 10;	
@@ -66,6 +82,7 @@ void setup(Token board[8][8], Player *player1, Player *player2){
 	board[3][4].type = 1;
 	
 	char input[20];
+	
 	printf("Enter Player 1's name: ");
 	while(!requestInput(20, input)) {
 		printf("Invalid input!\n");
@@ -79,7 +96,6 @@ void setup(Token board[8][8], Player *player1, Player *player2){
 		printf("Enter Player 1's token: ");
 	}
 	player1->token = input[0];
-	
 	player1->colour = true;
 	player1->tokensPlaced = 2;
 	player1->score = 2;
@@ -129,6 +145,14 @@ bool requestInput(int inputLength, char output[]) {
     return false;
 }
 
+/**
+ * Prints game information and requests user input.
+ *
+ * @param
+ *  - board: The board object. Contains Token structs.
+ *  - player1: The Player object for player 1.
+ *  - player2: The Player object for player 2.
+ */
 void play(Token board[8][8], Player *player1, Player *player2) {
 	bool turn = false;
 	while (true) {
