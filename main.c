@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 typedef struct Token {
 	int type;	
@@ -9,19 +10,19 @@ typedef struct Token {
 typedef struct Player {
 	char name[20];
 	bool colour;
-	int tokensPlace;
+	int tokensPlaced;
 } Player;
 
+bool requestInput(int inputLength, char output[]);
 void printBoard(Token board[8][8]);
-void setup(Token board[8][8]);
-
+void setup(Token board[8][8], Player player1, Player player2);
 
 int main() {
 	Token board[8][8];
 	Player player1;
 	Player player2;
 	
-	setup(board);
+	setup(board, player1, player2);
 	printBoard(board);
 }
 
@@ -40,15 +41,30 @@ void printBoard(Token board[8][8]) {
  	}
 }
 
-void setup(Token board[8][8]){
-	
+void setup(Token board[8][8], Player player1, Player player2){
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			board[i][j].type = 10;
-			
+			board[i][j].type = 10;	
 		}
-		
  	}
+	char input[20];
+	printf("Enter Player 1's name: ");
+	while(!requestInput(20, input)) {
+		printf("Invalid input!\n");
+		printf("Enter Player 1's name: ");
+	}
+	strcpy(player1.name, input);
+	player1.colour = true;
+	player1.tokensPlaced = 0;
+	
+	printf("Enter Player 2's name: ");
+	while(!requestInput(20, input)) {
+		printf("Invalid input!\n");
+		printf("Enter Player 2's name: ");
+	}
+	strcpy(player2.name, input);
+	player2.colour = false;
+	player2.tokensPlaced = 0;
 }
 
 /**
