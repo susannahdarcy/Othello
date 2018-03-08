@@ -5,8 +5,8 @@
 
 /**
  * Board type:
- * 	- 1:	Player 1 = X
- *  - 2:	Player 2 = O
+ * 	- 0:	Player 1 = X
+ *  - 1:	Player 2 = O
  *	- Else:	Blank = _ 	
  */
 
@@ -16,12 +16,14 @@ typedef struct Token {
 
 typedef struct Player {
 	char name[20];
+	char token;
 	bool colour;
 	int tokensPlaced;
+	int score;
 } Player;
 
 bool requestInput(int inputLength, char output[]);
-void printBoard(Token board[8][8]);
+void printBoard(Token board[8][8], Player *player1, Player *player2);
 void setup(Token board[8][8], Player *player1, Player *player2);
 void play(Token board[8][8], Player *player1, Player *player2);
 
@@ -34,15 +36,15 @@ int main() {
 	play(board, &player1, &player2);
 }
 
-void printBoard(Token board[8][8]) {
+void printBoard(Token board[8][8], Player *player1, Player *player2) {
 	printf("  1 2 3 4 5 6 7 8\n");
 	for (int i = 0; i < 8; i++) {
 		printf("%d ", i + 1);
 		for (int j = 0; j < 8; j++) {
 			if (board[i][j].type == 0) {
-				printf("X ");
+				printf("%c ", player1->token);
 			} else if (board[i][j].type == 1) {
-				printf("O ");
+				printf("%c ", player2->token);
 			} else {
 				printf("- ");
 			}
@@ -70,8 +72,17 @@ void setup(Token board[8][8], Player *player1, Player *player2){
 		printf("Enter Player 1's name: ");
 	}
 	strcpy(player1->name, input);
+	
+	printf("Enter Player 1's token: ");
+	while(!requestInput(20, input) || input[1] != '\0') {
+		printf("Invalid input!\n");
+		printf("Enter Player 1's token: ");
+	}
+	player1->token = input[0];
+	
 	player1->colour = true;
 	player1->tokensPlaced = 2;
+	player1->score = 2;
 	
 	printf("Enter Player 2's name: ");
 	while(!requestInput(20, input)) {
@@ -79,8 +90,16 @@ void setup(Token board[8][8], Player *player1, Player *player2){
 		printf("Enter Player 2's name: ");
 	}
 	strcpy(player2->name, input);
+	
+	printf("Enter Player 2's token: ");
+	while(!requestInput(20, input) || input[1] != '\0') {
+		printf("Invalid input!\n");
+		printf("Enter Player 2's token: ");
+	}
+	player2->token = input[0];
 	player2->colour = false;
 	player2->tokensPlaced = 2;
+	player2->score = 2;
 }
 
 /**
@@ -115,7 +134,7 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 	while (true) {
 		turn = !turn;
 		Player currentPlayer = turn ? *player1 : *player2;
-		printBoard(board);
+		printBoard(board, player1, player2);
 		printf("%s's turn.\n", currentPlayer.name);
 		printf("Tokens remaining: %d\n", 32 - currentPlayer.tokensPlaced);
 
