@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 typedef struct Token {
-	bool white;	
+	int type;	
 } Token;
 
 typedef struct Player {
@@ -12,8 +12,29 @@ typedef struct Player {
 	int tokensPlace;
 } Player;
 
+void printBoard(Token board[8][8]);
+
 int main() {
+	Token board[8][8];
+	Player player1;
+	Player player2;
 	
+	printBoard(board);
+}
+
+void printBoard(Token board[8][8]) {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (board[i][j].type == 0) {
+				printf("X");
+			} else if (board[i][j].type == 1) {
+				printf("O");
+			} else {
+				printf(" ");
+			}
+		}
+		printf("\n");
+ 	}
 }
 
 /**
