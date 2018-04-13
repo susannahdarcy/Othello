@@ -117,9 +117,55 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		printf("%s's turn.\n", currentPlayer.name);
 		printf("Tokens remaining: %d\n", 32 - currentPlayer.tokensPlaced);
 
+		//NO MOVE POSSIBLE
+		int move[2];
+		getMove(move, currentPlayer, result);
+		
+	}
+}
+
+void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
+	printf("%s, choose your move: \n", currentPlayer.name);
+	int count = 0;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (result[i][j] == true) {
+				printf("%d. (%d, %d)\t", ++count, i, j);
+			}
+		}
+	}
+	printf("\n> ");
+	int choice = -1;
+	while (choice == -1) {
 		char input[20];
-		printf("Enter input to continue.");
-		requestInput(20, input);
+		while(!requestInput(20, input)) {
+			printf("Invalid input!\n> ");
+		}
+		if (input[1] == '\0') {
+			choice = input[0] - 48;
+		} else if (input[2] = '\0') {
+			choice = (input[0] - 48) * 10 + input[1] - 48;
+		} else {
+			printf("Invalid input.\n> ");
+			continue;
+		}
+		if (!(choice > 0 && choice <= count)) {
+			printf("Invalid input.\n> ");
+			choice = -1;
+			continue;				
+		}
+	}
+	count = 0;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (result[i][j] == true) {
+				if (++count == choice) {
+					move[0] = i;
+					move[1] = j;
+					return;
+				}
+			}
+		}
 	}
 }
 
