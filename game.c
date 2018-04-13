@@ -114,9 +114,15 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		//printBoard(board, broadResult, player1, player2);
 
 		bool result[8][8];
-		narrowCalculateMoves(result, broadResult, board, turn);
+		int moves = narrowCalculateMoves(result, broadResult, board, turn);
 
 		printBoard(board, result, player1, player2);
+		
+		if (moves == 0) {
+			printf("No possible move for %s!\n", currentPlayer->name);
+			continue;
+		}
+		
 		printf("Score:\t%20s%3d\n\t%20s%3d\n", player1->name, player1->score, player2->name, player2->score);
 		printf("%s's turn.\n", currentPlayer->name);
 		printf("Tokens remaining: %d\n", 32 - currentPlayer->tokensPlaced);
@@ -197,7 +203,8 @@ void broadCalculateMoves(bool result[8][8], Token board[8][8], bool turn) {
 }
 int directions[8][2] = {{1,0},{-1,0},{0,-1},{0,1},{1,-1},{1,1},{-1,1}, {-1,-1}};
 
-void narrowCalculateMoves(bool result[8][8], bool boardResult[8][8],  Token board[8][8], bool turn) {
+int narrowCalculateMoves(bool result[8][8], bool boardResult[8][8],  Token board[8][8], bool turn) {
+	int count = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
             result[i][j] = false;
@@ -221,6 +228,7 @@ void narrowCalculateMoves(bool result[8][8], bool boardResult[8][8],  Token boar
                         } else if (board[x][y].type != 10){
                             if (seenEnemyToken) {
                                 result[i][j] = true;
+								count++;
                             }
                             break;
                         } else {
@@ -233,6 +241,7 @@ void narrowCalculateMoves(bool result[8][8], bool boardResult[8][8],  Token boar
 			}
 		}
 	}
+	return count;
 }
 
 void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *otherPlayer, bool turn) {
@@ -261,8 +270,8 @@ void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *oth
 							currentPlayer->score = currentPlayer->score + 1;
 							otherPlayer->score = otherPlayer->score - 1;
                         }
-                        break;
                     }
+                    break;
                 } else {
                     break;
                 }
