@@ -1,0 +1,31 @@
+# depslib dependency file v1.0
+1523616812 source:c:\users\test\desktop\othello\main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<string.h>
+	"structs.h"
+	"input.h"
+	"game.h"
+
+1523616812 c:\users\test\desktop\othello\structs.h
+
+1523616812 c:\users\test\desktop\othello\input.h
+
+1523621665 c:\users\test\desktop\othello\game.h
+
+1523621500 source:c:\users\test\desktop\othello\game.c
+	<stdio.h>
+	<stdbool.h>
+	<stdlib.h>
+	<string.h>
+	"structs.h"
+	"game.h"
+	"input.h"
+
+1523616812 source:c:\users\test\desktop\othello\input.c
+	<stdio.h>
+	<stdbool.h>
+	<stdlib.h>
+	"input.h"
+
