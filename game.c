@@ -70,7 +70,7 @@ void setup(Token board[8][8], Player *player1, Player *player2) {
 		printf("Invalid input!\n");
 		printf("Enter Player 1's token: ");
 	}
-	player1->token = '0';
+	player1->token = input[0];
 	player1->colour = true;
 	player1->tokensPlaced = 2;
 	player1->score = 2;
@@ -87,7 +87,7 @@ void setup(Token board[8][8], Player *player1, Player *player2) {
 		printf("Invalid input!\n");
 		printf("Enter Player 2's token: ");
 	}
-	player2->token = '1';
+	player2->token = input[0];
 	player2->colour = false;
 	player2->tokensPlaced = 2;
 	player2->score = 2;
@@ -102,10 +102,10 @@ void setup(Token board[8][8], Player *player1, Player *player2) {
  *  - player2: The Player object for player 2.
  */
 void play(Token board[8][8], Player *player1, Player *player2) {
-	bool turn = false;
+	bool turn = true;
 	while (true) {
 		turn = !turn;
-		Player currentPlayer = turn ? *player1 : *player2;
+		Player currentPlayer = turn ? *player2 : *player1;
 
 		bool broadResult[8][8];
 		broadCalculateMoves(broadResult, board, turn);
