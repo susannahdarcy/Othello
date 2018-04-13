@@ -103,7 +103,8 @@ void setup(Token board[8][8], Player *player1, Player *player2) {
  */
 void play(Token board[8][8], Player *player1, Player *player2) {
 	bool turn = true;
-	while (true) {
+	int count = 0;
+	while (count < 2) {
 		turn = !turn;
 		Player *currentPlayer = turn ? player2 : player1;
 		Player *otherPlayer = !turn ? player2 : player1;
@@ -117,13 +118,36 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		int moves = narrowCalculateMoves(result, broadResult, board, turn);
 
 		printBoard(board, result, player1, player2);
-		
+
 		if (moves == 0) {
 			printf("No possible move for %s!\n", currentPlayer->name);
-			continue;
+			count += 1;
+			if (count == 2) {
+                printf("Game Over!\n");
+                printf("Final Score:\t%12s%3d\n\t%20s%3d\n", player1->name, player1->score, player2->name, player2->score);
+                if (player1->score > player2->score) {
+                    printf("%s Wins!", player1->name);
+                } else {
+                    printf("%s Wins!", player2->name);
+                }
+                break;
 		}
-		
+			continue;
+		} else {
+            count = 0;
+		}
+
 		printf("Score:\t%20s%3d\n\t%20s%3d\n", player1->name, player1->score, player2->name, player2->score);
+
+		if (count == 2) {
+            printf("Game Over!\n");
+            if (player1->score > player2->score) {
+                printf("Player %s Wins!", player1->name);
+            } else {
+                printf("Player %s Wins!", player2->name);
+            }
+            break;
+		}
 		printf("%s's turn.\n", currentPlayer->name);
 		printf("Tokens remaining: %d\n", 32 - currentPlayer->tokensPlaced);
 
