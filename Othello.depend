@@ -12,9 +12,9 @@
 
 1523616812 c:\users\test\desktop\othello\input.h
 
-1523621665 c:\users\test\desktop\othello\game.h
+1523624399 c:\users\test\desktop\othello\game.h
 
-1523621500 source:c:\users\test\desktop\othello\game.c
+1523625271 source:c:\users\test\desktop\othello\game.c
 	<stdio.h>
 	<stdbool.h>
 	<stdlib.h>

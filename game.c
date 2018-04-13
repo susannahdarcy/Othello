@@ -17,18 +17,18 @@
  */
 void printBoard(Token board[8][8], bool result[8][8], Player *player1, Player *player2) {
 	printf("  1 2 3 4 5 6 7 8\n");
-	for (int i = 0; i < 8; i++) {
-		printf("%d ", i + 1);
-		for (int j = 0; j < 8; j++) {
+	for (int j = 0; j < 8; j++) {
+		printf("%d ", j + 1);
+		for (int i = 0; i < 8; i++) {
 			if (board[i][j].type == 0) {
 				printf("%c ", player1->token);
 			} else if (board[i][j].type == 1) {
 				printf("%c ", player2->token);
 			} else {
 			    if (result[i][j]){
-                    printf("P ");
-                } else {
                     printf("- ");
+                } else {
+                    printf("  ");
                 }
 			}
 		}
@@ -110,6 +110,8 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		bool broadResult[8][8];
 		broadCalculateMoves(broadResult, board, turn);
 
+		//printBoard(board, broadResult, player1, player2);
+
 		bool result[8][8];
 		narrowCalculateMoves(result, broadResult, board, turn);
 
@@ -120,7 +122,7 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		//NO MOVE POSSIBLE
 		int move[2];
 		getMove(move, currentPlayer, result);
-		
+        playMove(move, board, turn);
 	}
 }
 
@@ -130,7 +132,7 @@ void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (result[i][j] == true) {
-				printf("%d. (%d, %d)\t", ++count, i, j);
+				printf("%d. (%d, %d)\t", ++count, i + 1, j + 1);
 			}
 		}
 	}
@@ -152,7 +154,7 @@ void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
 		if (!(choice > 0 && choice <= count)) {
 			printf("Invalid input.\n> ");
 			choice = -1;
-			continue;				
+			continue;
 		}
 	}
 	count = 0;
@@ -189,20 +191,19 @@ void broadCalculateMoves(bool result[8][8], Token board[8][8], bool turn) {
 		}
 	}
 }
-int moves[8][2] = {{1,0},{-1,0},{0,-1},{0,1},{1,-1},{1,1},{-1,1}, {-1,-1}};
+int directions[8][2] = {{1,0},{-1,0},{0,-1},{0,1},{1,-1},{1,1},{-1,1}, {-1,-1}};
 
 void narrowCalculateMoves(bool result[8][8], bool boardResult[8][8],  Token board[8][8], bool turn) {
-    printf("Turn: %d", turn);
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
             result[i][j] = false;
 		    if (boardResult[i][j] == false) {
                 continue;
 		    }
-			for (int move = 0; move < 8; move++){
+			for (int direction = 0; direction < 8; direction++){
                 int dx, dy;
-                dx = moves[move][0];
-                dy = moves[move][1];
+                dx = directions[direction][0];
+                dy = directions[direction][1];
                 int x, y;
                 x = i;
                 y = j;
@@ -211,12 +212,13 @@ void narrowCalculateMoves(bool result[8][8], bool boardResult[8][8],  Token boar
                     x += dx;
                     y += dy;
                     if ((x <= 7 && x >= 0)&&(y <= 7 && y >= 0)){
-                        if (board[x][y].type != turn) {
+                        if (board[x][y].type != turn && board[x][y].type != 10) {
                             seenEnemyToken = true;
                         } else if (board[x][y].type != 10){
                             if (seenEnemyToken) {
                                 result[i][j] = true;
                             }
+                            break;
                         } else {
                             break;
                         }
@@ -227,4 +229,39 @@ void narrowCalculateMoves(bool result[8][8], bool boardResult[8][8],  Token boar
 			}
 		}
 	}
+}
+
+void playMove(int move[2], Token board[8][8], bool turn){
+    int x, y;
+    x = move[0];
+    y = move[1];
+    board[x][y].type = !turn;
+    for (int direction = 0; direction < 8; direction++){
+        int dx, dy;
+        dx = directions[direction][0];
+        dy = directions[direction][1];
+        bool seenEnemyToken = false;
+        for (int k = 0; k < 7; k++){
+            x += dx;
+            y += dy;
+            if ((x <= 7 && x >= 0)&&(y <= 7 && y >= 0)){
+                if (board[x][y].type != turn) {
+                    seenEnemyToken = true;
+                } else if (board[x][y].type != 10){
+                    if (seenEnemyToken) {
+                        for (; k >= 0; k--){
+                            x -= dx;
+                            y -= dy;
+                            board[x][y].type = turn;
+                        }
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }else {
+                break;
+            }
+        }
+    }
 }
