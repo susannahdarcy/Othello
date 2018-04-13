@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1523616812 source:c:\users\test\desktop\othello\main.c
+1523649019 source:c:\users\test\desktop\othello\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>

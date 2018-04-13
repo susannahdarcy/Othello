@@ -11,7 +11,7 @@
  * Board type:
  * 	- 0:	Player 1 = X
  *  - 1:	Player 2 = O
- *	- Else:	Blank = _ 	
+ *	- Else:	Blank = _
  */
 
 
@@ -19,8 +19,10 @@ int main() {
 	Token board[8][8];
 	Player player1;
 	Player player2;
-	
 	setup(board, &player1, &player2);
 	play(board, &player1, &player2);
+
+
+
 }
 

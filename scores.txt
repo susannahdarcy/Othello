@@ -1,0 +1,2 @@
+Player1 Susie points: 40
+Player2 Alex points: 24The winner is Susie

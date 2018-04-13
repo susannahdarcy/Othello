@@ -104,6 +104,8 @@ void setup(Token board[8][8], Player *player1, Player *player2) {
 void play(Token board[8][8], Player *player1, Player *player2) {
 	bool turn = true;
 	int count = 0;
+	char winner[20];
+	FILE *fp;
 	while (count < 2) {
 		turn = !turn;
 		Player *currentPlayer = turn ? player2 : player1;
@@ -124,14 +126,24 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 			count += 1;
 			if (count == 2) {
                 printf("Game Over!\n");
-                printf("Final Score:\t%12s%3d\n\t%20s%3d\n", player1->name, player1->score, player2->name, player2->score);
+                printf("Final Score:\nPlayer1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
                 if (player1->score > player2->score) {
-                    printf("%s Wins!", player1->name);
+                    printf("The winner is %s\n!", player1->name);
+                    strcpy(winner, player1->name);
                 } else {
-                    printf("%s Wins!", player2->name);
+                    printf("The winner is %s\n!", player2->name);
+                    strcpy(winner, player2->name);
                 }
+
+                if ((fp = fopen("scores.txt", "w"))==NULL) {
+                puts("File could not be opened");
+                } else {
+                    fprintf(fp, "Player1 %s points: %d\nPlayer2 %s points: %d\n", player1->name, player1->score, player2->name, player2->score);
+                    fprintf(fp, "The winner is %s\n", winner);
+                }
+                fclose(fp);
                 break;
-		}
+            }
 			continue;
 		} else {
             count = 0;
