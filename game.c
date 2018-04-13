@@ -105,7 +105,8 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 	bool turn = true;
 	while (true) {
 		turn = !turn;
-		Player currentPlayer = turn ? *player2 : *player1;
+		Player *currentPlayer = turn ? player2 : player1;
+		Player *otherPlayer = !turn ? player2 : player1;
 
 		bool broadResult[8][8];
 		broadCalculateMoves(broadResult, board, turn);
@@ -116,13 +117,14 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		narrowCalculateMoves(result, broadResult, board, turn);
 
 		printBoard(board, result, player1, player2);
-		printf("%s's turn.\n", currentPlayer.name);
-		printf("Tokens remaining: %d\n", 32 - currentPlayer.tokensPlaced);
+		printf("Score:\t%20s%3d\n\t%20s%3d\n", player1->name, player1->score, player2->name, player2->score);
+		printf("%s's turn.\n", currentPlayer->name);
+		printf("Tokens remaining: %d\n", 32 - currentPlayer->tokensPlaced);
 
 		//NO MOVE POSSIBLE
 		int move[2];
-		getMove(move, currentPlayer, result);
-        playMove(move, board, turn);
+		getMove(move, *currentPlayer, result);
+        playMove(move, board, currentPlayer, otherPlayer, turn);
 	}
 }
 
@@ -233,8 +235,9 @@ void narrowCalculateMoves(bool result[8][8], bool boardResult[8][8],  Token boar
 	}
 }
 
-void playMove(int move[2], Token board[8][8], bool turn) {
-    board[move[0]][move[1]].type = !turn;
+void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *otherPlayer, bool turn) {
+    board[move[0]][move[1]].type = turn;
+	currentPlayer->score = currentPlayer->score + 1;
     for (int direction = 0; direction < 8; direction++) {
         int dx, dy;
 		int x, y;
@@ -251,10 +254,12 @@ void playMove(int move[2], Token board[8][8], bool turn) {
                     seenEnemyToken = true;
                 } else if (board[x][y].type != 10) {
                     if (seenEnemyToken) {
-                        for (; k >= 0; k--) {
+                        for (; k > 0; k--) {
                             x -= dx;
                             y -= dy;
                             board[x][y].type = turn;
+							currentPlayer->score = currentPlayer->score + 1;
+							otherPlayer->score = otherPlayer->score - 1;
                         }
                         break;
                     }
