@@ -106,8 +106,33 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		printf("%s's turn.\n", currentPlayer.name);
 		printf("Tokens remaining: %d\n", 32 - currentPlayer.tokensPlaced);
 
+		bool result[8][8];
+		broadCalculateMoves(result, board, turn);
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				printf("%d ", result[i][j]);
+			}
+			printf("\n");
+		}		
 		char input[20];
 		printf("Enter input to continue.");
 		requestInput(20, input);
+	}
+}
+
+void broadCalculateMoves(bool result[8][8], Token board[8][8], bool turn) {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			bool found = false;
+			for (int offsetX = -1; offsetX < 2; offsetX++) {
+				for (int offsetY = -1; offsetY < 2; offsetY++) {
+					if (i + offsetX >= 0 && i + offsetX < 8 && j + offsetY >= 0 && j + offsetY < 8 && board[i][j].type == 10 && board[i + offsetX][j + offsetY].type == turn) {
+						found = true;
+						break;
+					}
+				}
+			}
+			result[i][j] = found;
+		}
 	}
 }
