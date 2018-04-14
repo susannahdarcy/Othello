@@ -21,8 +21,5 @@ int main() {
 	Player player2;
 	setup(board, &player1, &player2);
 	play(board, &player1, &player2);
-
-
-
 }
 

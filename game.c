@@ -104,8 +104,6 @@ void setup(Token board[8][8], Player *player1, Player *player2) {
 void play(Token board[8][8], Player *player1, Player *player2) {
 	bool turn = true;
 	int count = 0;
-	char winner[20];
-	FILE *fp;
 	while (count < 2) {
 		turn = !turn;
 		Player *currentPlayer = turn ? player2 : player1;
@@ -125,29 +123,11 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 			printf("No possible move for %s!\n", currentPlayer->name);
 			count += 1;
 			if (count == 2) {
-                printf("Game Over!\n");
-                printf("Final Score:\nPlayer1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
-                if (player1->score > player2->score) {
-                    printf("The winner is %s\n!", player1->name);
-                    strcpy(winner, player1->name);
-                } else {
-                    printf("The winner is %s\n!", player2->name);
-                    strcpy(winner, player2->name);
-                }
-
-                if ((fp = fopen("scores.txt", "w"))==NULL) {
-                puts("File could not be opened");
-                } else {
-                    fprintf(fp, "Player1 %s points: %d\nPlayer2 %s points: %d\n", player1->name, player1->score, player2->name, player2->score);
-                    fprintf(fp, "The winner is %s\n", winner);
-                }
-                fclose(fp);
                 break;
             }
 			continue;
-		} else {
-            count = 0;
 		}
+        count = 0;
 
 		printf("Score:\t%20s%3d\n\t%20s%3d\n", player1->name, player1->score, player2->name, player2->score);
 
@@ -168,6 +148,30 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		getMove(move, *currentPlayer, result);
         playMove(move, board, currentPlayer, otherPlayer, turn);
 	}
+	saveToFile(player1, player2);
+}
+
+void saveToFile(Player *player1, Player *player2) {
+	FILE *fp;
+    printf("Game Over!\n");
+	
+	if ((fp = fopen("scores.txt", "a"))==NULL) {
+        puts("File could not be opened");
+    } else {
+		printf("Final Score:\nPlayer1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
+        fprintf(fp, "Final Score:\nPlayer1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
+		if (player1->score == player2->score) {
+			printf("The game is a tie!\n!");
+	        fprintf(fp, "The game is a tie!\n!");
+	    } else if (player1->score > player2->score) {
+			printf("The winner is %s!\n", player1->name);
+		    fprintf(fp, "The winner is %s!\n", player1->name);
+        } else {
+			printf("The winner is %s!\n", player2->name);
+		    fprintf(fp, "The winner is %s!\n", player2->name);
+        }
+		 fclose(fp);
+    }
 }
 
 void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
