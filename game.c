@@ -224,13 +224,17 @@ void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
 void broadCalculateMoves(bool result[8][8], Token board[8][8], bool turn) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
+			if (board[i][j].type != 10) {
+				result[i][j] = false;
+				continue;
+			}
 			bool found = false;
 			for (int offsetX = -1; offsetX < 2; offsetX++) {
 				for (int offsetY = -1; offsetY < 2; offsetY++) {
-				    if (offsetX == 0 && offsetX == offsetY)
+				    if (offsetX == 0 && offsetX == offsetY)//If we're checking the original square
                         continue;
-					if (i + offsetX >= 0 && i + offsetX < 8 && j + offsetY >= 0 && j + offsetY < 8) {//On board
-                        if (board[i][j].type == 10 && board[i + offsetX][j + offsetY].type != turn && board[i + offsetX][j + offsetY].type != 10) {
+					if (onBoard(i + offsetX, j + offsetY)) {
+                        if (board[i + offsetX][j + offsetY].type != turn && board[i + offsetX][j + offsetY].type != 10) {//If we're beside an opponent token.
                             found = true;
                             break;
                         }
@@ -243,35 +247,33 @@ void broadCalculateMoves(bool result[8][8], Token board[8][8], bool turn) {
 }
 int directions[8][2] = {{1,0},{-1,0},{0,-1},{0,1},{1,-1},{1,1},{-1,1}, {-1,-1}};
 
-int narrowCalculateMoves(bool result[8][8], bool boardResult[8][8],  Token board[8][8], bool turn) {
+int narrowCalculateMoves(bool result[8][8], bool broadResult[8][8],  Token board[8][8], bool turn) {
 	int count = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
             result[i][j] = false;
-		    if (boardResult[i][j] == false) {
+		    if (broadResult[i][j] == false) {//If the tile wasn't approved by the broad phase.
                 continue;
 		    }
-			for (int direction = 0; direction < 8; direction++){
-                int dx, dy;
-                dx = directions[direction][0];
-                dy = directions[direction][1];
-                int x, y;
-                x = i;
-                y = j;
+			for (int direction = 0; direction < 8; direction++) {
+                int dx = directions[direction][0];
+                int dy = directions[direction][1];
+                int x = i;
+                int y = j;
                 bool seenEnemyToken = false;
-                for (int k = 0; k < 7; k++){
+                for (int k = 0; k < 7; k++) {//7 is the most amount of "steps" we can take.
                     x += dx;
                     y += dy;
-                    if ((x <= 7 && x >= 0)&&(y <= 7 && y >= 0)){
-                        if (board[x][y].type != turn && board[x][y].type != 10) {
+                    if (onBoard(x, y)){
+                        if (board[x][y].type != turn && board[x][y].type != 10) {//Enemy token
                             seenEnemyToken = true;
-                        } else if (board[x][y].type != 10){
+                        } else if (board[x][y].type != 10) {//Our token
                             if (seenEnemyToken) {
                                 result[i][j] = true;
 								count++;
                             }
                             break;
-                        } else {
+                        } else {//Blank token
                             break;
                         }
                     } else {
@@ -295,10 +297,10 @@ void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *oth
         dx = directions[direction][0];
         dy = directions[direction][1];
         bool seenEnemyToken = false;
-        for (int k = 0; k < 7; k++){
+        for (int k = 0; k < 7; k++){//7 is the most amount of "steps" we can take.
             x += dx;
             y += dy;
-            if ((x <= 7 && x >= 0)&&(y <= 7 && y >= 0)) {
+            if (onBoard(x, y)) {
 				if (board[x][y].type != turn && board[x][y].type != 10) {
                     seenEnemyToken = true;
                 } else if (board[x][y].type != 10) {
@@ -320,4 +322,8 @@ void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *oth
             }
         }
     }
+}
+
+bool onBoard(int x, int y) {
+	return x <= 7 && x >= 0 && y <= 7 && y >= 0;
 }
