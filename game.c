@@ -94,14 +94,6 @@ void requestPlayer(Player *player, int number) {
 
 }
 
-/**
- * Prints game information and requests user input.
- *
- * @param
- *  - board: The board object. Contains Token structs.
- *  - player1: The Player object for player 1.
- *  - player2: The Player object for player 2.
- */
 void play(Token board[8][8], Player *player1, Player *player2) {
 	bool turn = true;
 	int count = 0;
@@ -249,7 +241,16 @@ void broadCalculateMoves(bool result[8][8], Token board[8][8], bool turn) {
 }
 int directions[8][2] = {{1,0},{-1,0},{0,-1},{0,1},{1,-1},{1,1},{-1,1}, {-1,-1}};
 
-int narrowCalculateMoves(bool result[8][8], bool broadResult[8][8],  Token board[8][8], bool turn) {
+/**
+ *Identifies the possible moves for the player.
+ *
+ * @param
+ * 	- results: Holds the values for possible moves for the player.
+ *  - broadResults: Contains the results of a broad check for possible moves. 
+ *  - board: The board object. Contains Token structs.
+ * 	- turn: For identifying which player is the current player. 
+ */
+int narrowCalculateMoves(bool result[8][8], bool broadResult[8][8], Token board[8][8], bool turn) {
 	int count = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
@@ -288,6 +289,16 @@ int narrowCalculateMoves(bool result[8][8], bool broadResult[8][8],  Token board
 	return count;
 }
 
+/**
+ * Places the players input move, and changes the board depending on the game rule.
+ *
+ * @param
+ * 	- move: The players move.
+ *  - board: The board object. Contains Token structs.
+ *  - currentPlayer: The Player object for the current player.
+ *  - otherPlayer: The Player object for the opposing player.
+ * 	- turn: For identifying which player is the current player. 
+ */
 void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *otherPlayer, bool turn) {
 	board[move[0]][move[1]].type = turn;
 	currentPlayer->score = currentPlayer->score + 1;
@@ -303,9 +314,11 @@ void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *oth
 			x += dx;
 			y += dy;
 			if (onBoard(x, y)) {
+				//type 10 represents empty token.
 				if (board[x][y].type != turn && board[x][y].type != 10) {
 					seenEnemyToken = true;
 				} else if (board[x][y].type != 10) {
+					//Changes opposing player's tokens to the current player's token
 					if (seenEnemyToken) {
 						for (; k > 0; k--) {
 							x -= dx;
@@ -326,6 +339,13 @@ void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *oth
 	}
 }
 
+/**
+ * Check to see if the currnet location is on the board.
+ *
+ * @param
+ *  - x: First parameter value for the board.
+ *  - y: Second parameter value for the board.
+ */
 bool onBoard(int x, int y) {
-	return x <= 7 && x >= 0 && y <= 7 && y >= 0;
+	return x <= 7 && x >= 0 && y <= 7 && y >= 0; //returns true if the current location is on the board.
 }
