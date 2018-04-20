@@ -25,11 +25,11 @@ void printBoard(Token board[8][8], bool result[8][8], Player *player1, Player *p
 			} else if (board[i][j].type == 1) {
 				printf("%c ", player2->token);
 			} else {
-			    if (result[i][j]){
-                    printf("- ");
-                } else {
-                    printf("  ");
-                }
+				if (result[i][j]){
+					printf("- ");
+				} else {
+					printf("  ");
+				}
 			}
 		}
 		printf("\n");
@@ -124,22 +124,22 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 			printf("No possible move for %s!\n", currentPlayer->name);
 			count += 1;
 			if (count == 2) {
-                break;
-            }
+				break;
+			}
 			continue;
 		}
-        count = 0;
+		count = 0;
 
 		printf("Score:\t%20s%3d\n\t%20s%3d\n", player1->name, player1->score, player2->name, player2->score);
 
 		if (count == 2) {
-            printf("Game Over!\n");
-            if (player1->score > player2->score) {
-                printf("Player %s Wins!", player1->name);
-            } else {
-                printf("Player %s Wins!", player2->name);
-            }
-            break;
+			printf("Game Over!\n");
+			if (player1->score > player2->score) {
+				printf("Player %s Wins!", player1->name);
+			} else {
+				printf("Player %s Wins!", player2->name);
+			}
+			break;
 		}
 		printf("%s's turn.\n", currentPlayer->name);
 		printf("Tokens remaining: %d\n", 32 - currentPlayer->tokensPlaced);
@@ -147,32 +147,33 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		//NO MOVE POSSIBLE
 		int move[2];
 		getMove(move, *currentPlayer, result);
-        playMove(move, board, currentPlayer, otherPlayer, turn);
+		playMove(move, board, currentPlayer, otherPlayer, turn);
 	}
 	saveToFile(player1, player2);
 }
 
 void saveToFile(Player *player1, Player *player2) {
 	FILE *fp;
-    printf("Game Over!\n");
+	printf("Game Over!\n");
 	
 	if ((fp = fopen("scores.txt", "a"))==NULL) {
-        puts("File could not be opened");
-    } else {
+		puts("File could not be opened");
+	} else {
 		printf("Player1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
-        fprintf(fp, "Player1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
+		fprintf(fp, "Player1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
+
 		if (player1->score == player2->score) {
 			printf("The game is a tie!\n!");
-	        fprintf(fp, "The game is a tie!\n!");
-	    } else if (player1->score > player2->score) {
+			fprintf(fp, "The game is a tie!\n!");
+		} else if (player1->score > player2->score) {
 			printf("The winner is %s!\n", player1->name);
-		    fprintf(fp, "The winner is %s!\n", player1->name);
-        } else {
+			fprintf(fp, "The winner is %s!\n", player1->name);
+		} else {
 			printf("The winner is %s!\n", player2->name);
-		    fprintf(fp, "The winner is %s!\n", player2->name);
-        }
+			fprintf(fp, "The winner is %s!\n", player2->name);
+		}
 		 fclose(fp);
-    }
+	}
 }
 
 void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
@@ -232,13 +233,13 @@ void broadCalculateMoves(bool result[8][8], Token board[8][8], bool turn) {
 			bool found = false;
 			for (int offsetX = -1; offsetX < 2; offsetX++) {
 				for (int offsetY = -1; offsetY < 2; offsetY++) {
-				    if (offsetX == 0 && offsetX == offsetY)//If we're checking the original square
-                        continue;
+					if (offsetX == 0 && offsetX == offsetY)//If we're checking the original square
+						continue;
 					if (onBoard(i + offsetX, j + offsetY)) {
-                        if (board[i + offsetX][j + offsetY].type != turn && board[i + offsetX][j + offsetY].type != 10) {//If we're beside an opponent token.
-                            found = true;
-                            break;
-                        }
+						if (board[i + offsetX][j + offsetY].type != turn && board[i + offsetX][j + offsetY].type != 10) {//If we're beside an opponent token.
+							found = true;
+							break;
+						}
 					}
 				}
 			}
@@ -252,35 +253,35 @@ int narrowCalculateMoves(bool result[8][8], bool broadResult[8][8],  Token board
 	int count = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-            result[i][j] = false;
-		    if (broadResult[i][j] == false) {//If the tile wasn't approved by the broad phase.
-                continue;
-		    }
+			result[i][j] = false;
+			if (broadResult[i][j] == false) {//If the tile wasn't approved by the broad phase.
+				continue;
+			}
 			for (int direction = 0; direction < 8; direction++) {
-                int dx = directions[direction][0];
-                int dy = directions[direction][1];
-                int x = i;
-                int y = j;
-                bool seenEnemyToken = false;
-                for (int k = 0; k < 7; k++) {//7 is the most amount of "steps" we can take.
-                    x += dx;
-                    y += dy;
-                    if (onBoard(x, y)){
-                        if (board[x][y].type != turn && board[x][y].type != 10) {//Enemy token
-                            seenEnemyToken = true;
-                        } else if (board[x][y].type != 10) {//Our token
-                            if (seenEnemyToken) {
-                                result[i][j] = true;
+				int dx = directions[direction][0];
+				int dy = directions[direction][1];
+				int x = i;
+				int y = j;
+				bool seenEnemyToken = false;
+				for (int k = 0; k < 7; k++) {//7 is the most amount of "steps" we can take.
+					x += dx;
+					y += dy;
+					if (onBoard(x, y)){
+						if (board[x][y].type != turn && board[x][y].type != 10) {//Enemy token
+							seenEnemyToken = true;
+						} else if (board[x][y].type != 10) {//Our token
+							if (seenEnemyToken) {
+								result[i][j] = true;
 								count++;
-                            }
-                            break;
-                        } else {//Blank token
-                            break;
-                        }
-                    } else {
-                        break;
-                    }
-                }
+							}
+							break;
+						} else {//Blank token
+							break;
+						}
+					} else {
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -288,41 +289,41 @@ int narrowCalculateMoves(bool result[8][8], bool broadResult[8][8],  Token board
 }
 
 void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *otherPlayer, bool turn) {
-    board[move[0]][move[1]].type = turn;
+	board[move[0]][move[1]].type = turn;
 	currentPlayer->score = currentPlayer->score + 1;
-    for (int direction = 0; direction < 8; direction++) {
-        int dx, dy;
+	for (int direction = 0; direction < 8; direction++) {
+		int dx, dy;
 		int x, y;
 		x = move[0];
 		y = move[1];
-        dx = directions[direction][0];
-        dy = directions[direction][1];
-        bool seenEnemyToken = false;
-        for (int k = 0; k < 7; k++){//7 is the most amount of "steps" we can take.
-            x += dx;
-            y += dy;
-            if (onBoard(x, y)) {
+		dx = directions[direction][0];
+		dy = directions[direction][1];
+		bool seenEnemyToken = false;
+		for (int k = 0; k < 7; k++){//7 is the most amount of "steps" we can take.
+			x += dx;
+			y += dy;
+			if (onBoard(x, y)) {
 				if (board[x][y].type != turn && board[x][y].type != 10) {
-                    seenEnemyToken = true;
-                } else if (board[x][y].type != 10) {
-                    if (seenEnemyToken) {
-                        for (; k > 0; k--) {
-                            x -= dx;
-                            y -= dy;
-                            board[x][y].type = turn;
+					seenEnemyToken = true;
+				} else if (board[x][y].type != 10) {
+					if (seenEnemyToken) {
+						for (; k > 0; k--) {
+							x -= dx;
+							y -= dy;
+							board[x][y].type = turn;
 							currentPlayer->score = currentPlayer->score + 1;
 							otherPlayer->score = otherPlayer->score - 1;
-                        }
-                    }
-                    break;
-                } else {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-    }
+						}
+					}
+					break;
+				} else {
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+	}
 }
 
 bool onBoard(int x, int y) {
