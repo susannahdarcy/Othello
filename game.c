@@ -152,11 +152,17 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 	saveToFile(player1, player2);
 }
 
+/**
+ * Saves the game result to a file.
+ *
+ * @param
+ *  - player1: The Player object for player 1.
+ *  - player2: The Player object for player 2.
+ */
 void saveToFile(Player *player1, Player *player2) {
 	FILE *fp;
 	printf("Game Over!\n");
-	
-	if ((fp = fopen("scores.txt", "a"))==NULL) {
+	if ((fp = fopen("scores.txt", "a")) == NULL) {
 		puts("File could not be opened");
 	} else {
 		printf("Player1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
@@ -172,10 +178,18 @@ void saveToFile(Player *player1, Player *player2) {
 			printf("The winner is %s!\n", player2->name);
 			fprintf(fp, "The winner is %s!\n", player2->name);
 		}
-		 fclose(fp);
+		fclose(fp);
 	}
 }
 
+/**
+ * Asks the user to choose a move. 
+ *
+ * @param
+ *  - move: The resulting move, returned by parameter.
+ *  - currentPlayer: The Player object for the current player.
+ *  - result: An array of bools, if [i][j] is true, it is a valid move. Should be the result from narrowCalculateMoves.
+ */
 void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
 	printf("%s, choose your move: \n", currentPlayer.name);
 	int count = 0;
@@ -189,20 +203,20 @@ void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
 	}
 	printf("\n> ");
 	int choice = -1;
-	while (choice == -1) {
+	while (choice == -1) {//Loops until we receive valid input.
 		char input[20];
 		while(!requestInput(20, input)) {
 			printf("Invalid input!1\n> ");
 		}
-		if (input[1] == '\0') {
-			choice = input[0] - 48;
-		} else if (input[2] == '\0') {
-			choice = (input[0] - 48) * 10 + input[1] - 48;
+		if (input[1] == '\0') {//If the input was one character long.
+			choice = input[0] - 48;//ASSUME that the user input a valid number.
+		} else if (input[2] == '\0') {//If the input was two characters long
+			choice = (input[0] - 48) * 10 + input[1] - 48;//ASSUME the user put in a valid number, 
 		} else {
 			printf("Invalid input.2\n> ");
 			continue;
 		}
-		if (!(choice > 0 && choice <= count)) {
+		if (!(choice > 0 && choice <= count)) {//Now we check for valid input.
 			printf("Invalid input.3\n> ");
 			choice = -1;
 			continue;
@@ -213,7 +227,7 @@ void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
 		for (int j = 0; j < 8; j++) {
 			if (result[i][j] == true) {
 				count++;
-				if (count == choice) {
+				if (count == choice) {//Finds the move pertaining to the users choice and returns it.
 					move[0] = i;
 					move[1] = j;
 					return;
@@ -223,16 +237,24 @@ void getMove(int move[2], Player currentPlayer, bool result[8][8]) {
 	}
 }
 
+/**
+ * Broadly calculates valid moves. Checking if there is an adjacent enemy tile.
+ *
+ * @param
+ *  - result: The result, an array of bools. If [i][j] is true, it is a broadly valid move.
+ *  - board: The current board state.
+ *  - turn: The current turn.
+ */
 void broadCalculateMoves(bool result[8][8], Token board[8][8], bool turn) {
 	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
-			if (board[i][j].type != 10) {
+		for (int j = 0; j < 8; j++) {//Loops through every position on the board.
+			if (board[i][j].type != 10) {//If the space isn't blank, we can't possibly move there.
 				result[i][j] = false;
 				continue;
 			}
 			bool found = false;
 			for (int offsetX = -1; offsetX < 2; offsetX++) {
-				for (int offsetY = -1; offsetY < 2; offsetY++) {
+				for (int offsetY = -1; offsetY < 2; offsetY++) {//Loop through the positions directly around the center (i, j)
 					if (offsetX == 0 && offsetX == offsetY)//If we're checking the original square
 						continue;
 					if (onBoard(i + offsetX, j + offsetY)) {
@@ -242,11 +264,16 @@ void broadCalculateMoves(bool result[8][8], Token board[8][8], bool turn) {
 						}
 					}
 				}
+				if (found) {//No point continuing if we've already found an enemy token.
+					break;
+				}
 			}
 			result[i][j] = found;
 		}
 	}
 }
+
+//An array representing all directions that should be checked by the game when calculating moves.
 int directions[8][2] = {{1,0},{-1,0},{0,-1},{0,1},{1,-1},{1,1},{-1,1}, {-1,-1}};
 
 int narrowCalculateMoves(bool result[8][8], bool broadResult[8][8],  Token board[8][8], bool turn) {
@@ -325,6 +352,7 @@ void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *oth
 		}
 	}
 }
+
 
 bool onBoard(int x, int y) {
 	return x <= 7 && x >= 0 && y <= 7 && y >= 0;

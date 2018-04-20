@@ -2,3 +2,7 @@ Final Score:
 Player1 Alex, points: 15
 Player2 Bob, points: 49
 The winner is Bob!
+Final Score:
+Player1 Alex, points: 35
+Player2 Bob, points: 29
+The winner is Alex!
