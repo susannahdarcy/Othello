@@ -47,6 +47,7 @@ void printBoard(Token board[8][8], bool result[8][8], Player *player1, Player *p
 void setup(Token board[8][8], Player *player1, Player *player2) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
+			//Type 10 value represent empty space.
 			board[i][j].type = 10;
 		}
  	}
@@ -93,11 +94,21 @@ void requestPlayer(Player *player, int number) {
 	player->score = 2;
 
 }
-
+/**
+ * Runs the game, follows game rules.
+ *
+ * @param
+ *  - board: The board object. Contains Token structs.
+ *  - player1: The Player object for player 1.
+ *  - player2: The Player object for player 2.
+ */
 void play(Token board[8][8], Player *player1, Player *player2) {
 	bool turn = true;
+
+	//count: To keep track of the number of no move turns, which when it equals 2, the game will end.
 	int count = 0;
 	while (count < 2) {
+		//Changes who turn it is on each loop.
 		turn = !turn;
 		Player *currentPlayer = turn ? player2 : player1;
 		Player *otherPlayer = !turn ? player2 : player1;
@@ -105,13 +116,13 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		bool broadResult[8][8];
 		broadCalculateMoves(broadResult, board, turn);
 
-		//printBoard(board, broadResult, player1, player2);
-
 		bool result[8][8];
+		//moves records the amount of possible moves the player can take.
 		int moves = narrowCalculateMoves(result, broadResult, board, turn);
 
 		printBoard(board, result, player1, player2);
 
+		// If there was no possible moves, count will be increased, and the turn will pass.
 		if (moves == 0) {
 			printf("No possible move for %s!\n", currentPlayer->name);
 			count += 1;
@@ -123,21 +134,11 @@ void play(Token board[8][8], Player *player1, Player *player2) {
 		count = 0;
 
 		printf("Score:\t%20s%3d\n\t%20s%3d\n", player1->name, player1->score, player2->name, player2->score);
-
-		if (count == 2) {
-			printf("Game Over!\n");
-			if (player1->score > player2->score) {
-				printf("Player %s Wins!", player1->name);
-			} else {
-				printf("Player %s Wins!", player2->name);
-			}
-			break;
-		}
 		printf("%s's turn.\n", currentPlayer->name);
 		printf("Tokens remaining: %d\n", 32 - currentPlayer->tokensPlaced);
 
-		//NO MOVE POSSIBLE
 		int move[2];
+		//Move is returned by parameter from getMove(), and containts the choosen move. It is then passed into playMove().
 		getMove(move, *currentPlayer, result);
 		playMove(move, board, currentPlayer, otherPlayer, turn);
 	}
