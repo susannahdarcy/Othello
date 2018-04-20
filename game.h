@@ -7,3 +7,4 @@ void getMove(int move[2], Player currentPlayer, bool result[8][8]);
 void playMove(int move[2], Token board[8][8], Player *currentPlayer, Player *otherPlayer, bool turn);
 void saveToFile(Player *player1, Player *player2);
 bool onBoard(int x, int y);
+void requestPlayer(Player *player, int number);

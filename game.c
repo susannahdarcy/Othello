@@ -56,41 +56,42 @@ void setup(Token board[8][8], Player *player1, Player *player2) {
 	board[4][3].type = 1;
 	board[3][4].type = 1;
 
+	requestPlayer(player1, 1);
+	requestPlayer(player2, 2);
+	
+}
+
+
+/**
+ * Request player name and token from user
+ *
+ * @param
+ *  - player: The Player object.
+ *  - number: The Player number. 
+ */
+
+void requestPlayer(Player *player, int number) {
+
 	char input[20];
 
-	printf("Enter Player 1's name: ");
+	
+	printf("Enter Player %d's name: ", number);
 	while(!requestInput(20, input)) {
 		printf("Invalid input!\n");
-		printf("Enter Player 1's name: ");
+		printf("Enter Player %d's name: ", number);
 	}
-	strcpy(player1->name, input);
+	strcpy(player->name, input);
 
-	printf("Enter Player 1's token: ");
-	while(!requestInput(20, input) || input[1] != '\0') {
-		printf("Invalid input!\n");
-		printf("Enter Player 1's token: ");
+	printf("Enter Player %d's token: ", number);
+	while(!requestInput(20, input) || input[1] != '\0' || input[0] == '-' || (input[0] >= '0' && input[0] <= '9')) {
+		printf("Invalid input!\nPlease don't enter '-' and numbers between 0 and 9\n");
+		printf("Enter Player %d's token: ", number);
 	}
-	player1->token = input[0];
-	player1->colour = true;
-	player1->tokensPlaced = 2;
-	player1->score = 2;
+	player->token = input[0];
+	player->colour = true;
+	player->tokensPlaced = 2;
+	player->score = 2;
 
-	printf("Enter Player 2's name: ");
-	while(!requestInput(20, input)) {
-		printf("Invalid input!\n");
-		printf("Enter Player 2's name: ");
-	}
-	strcpy(player2->name, input);
-
-	printf("Enter Player 2's token: ");
-	while(!requestInput(20, input) || input[1] != '\0') {
-		printf("Invalid input!\n");
-		printf("Enter Player 2's token: ");
-	}
-	player2->token = input[0];
-	player2->colour = false;
-	player2->tokensPlaced = 2;
-	player2->score = 2;
 }
 
 /**
@@ -158,8 +159,8 @@ void saveToFile(Player *player1, Player *player2) {
 	if ((fp = fopen("scores.txt", "a"))==NULL) {
         puts("File could not be opened");
     } else {
-		printf("Final Score:\nPlayer1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
-        fprintf(fp, "Final Score:\nPlayer1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
+		printf("Player1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
+        fprintf(fp, "Player1 %s, points: %d\nPlayer2 %s, points: %d\n", player1->name, player1->score, player2->name, player2->score);
 		if (player1->score == player2->score) {
 			printf("The game is a tie!\n!");
 	        fprintf(fp, "The game is a tie!\n!");
